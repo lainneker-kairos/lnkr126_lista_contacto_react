@@ -7,7 +7,40 @@ export function StoreProvider({ children }) {
     const [store, dispatch] = useReducer(storeReducer, initialStore());
 
     const actions = {
-       
+        fetchContacts: async () => {
+            try {
+                const response = await fetch("https://playground.4geeks.com/contact/agendas/AgendaLNKR/contacts");
+                
+                if (response.status === 404) {
+                    await fetch("https://playground.4geeks.com/contact/agendas/AgendaLNKR", { 
+                        method: "POST" 
+                    });
+                    dispatch({ type: "set_contacts", payload: [] });
+                    return;
+                }
+                
+                const data = await response.json();
+                dispatch({ type: "set_contacts", payload: data.contacts });
+            } catch (error) {
+                console.error("Error fetching contacts:", error);
+            }
+        },
+
+        deleteContact: async (id) => {
+            try {
+                const response = await fetch(`https://playground.4geeks.com/contact/agendas/AgendaLNKR/contacts/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (response.ok) {
+                    dispatch({ type: "delete_contact", payload: id });
+                    return true;
+                }
+            } catch (error) {
+                console.error("Error al eliminar el contacto:", error);
+            }
+            return false;
+        },
 
         addContact: async (contact) => {
             try {

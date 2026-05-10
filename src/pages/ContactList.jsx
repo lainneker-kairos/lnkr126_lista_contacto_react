@@ -4,29 +4,10 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import { ContactCard } from "../components/ContactCard";
 
 export const ContactList = () => {
-    const { store, dispatch } = useGlobalReducer();
-
-    const fetchContacts = async () => {
-        try {
-            const response = await fetch("https://playground.4geeks.com/contact/agendas/AgendaLNKR/contacts");
-            
-            if (response.status === 404) {
-                await fetch("https://playground.4geeks.com/contact/agendas/AgendaLNKR", { 
-                    method: "POST" 
-                });
-                dispatch({ type: "set_contacts", payload: [] });
-                return;
-            }
-            
-            const data = await response.json();
-            dispatch({ type: "set_contacts", payload: data.contacts });
-        } catch (error) {
-            console.error("Error fetching contacts:", error);
-        }
-    };
+    const { store, actions } = useGlobalReducer();
 
     useEffect(() => {
-        fetchContacts();
+        actions.fetchContacts();
     }, []);
 
     return (
