@@ -42,7 +42,6 @@ export const ContactList = () => {
                         <ContactCard 
                             key={contact.id} 
                             contact={contact} 
-                            fetchContacts={fetchContacts}
                         />
                     ))
                 ) : (

@@ -1,24 +1,59 @@
-// Import necessary hooks and functions from React.
 import { useContext, useReducer, createContext } from "react";
-import storeReducer, { initialStore } from "../store"  // Import the reducer and the initial state.
+import storeReducer, { initialStore } from "../store";
 
-// Create a context to hold the global state of the application
-// We will call this global state the "store" to avoid confusion while using local states
-const StoreContext = createContext()
+const StoreContext = createContext();
 
-// Define a provider component that encapsulates the store and warps it in a context provider to 
-// broadcast the information throught all the app pages and components.
 export function StoreProvider({ children }) {
-    // Initialize reducer with the initial state.
-    const [store, dispatch] = useReducer(storeReducer, initialStore())
-    // Provide the store and dispatch method to all child components.
-    return <StoreContext.Provider value={{ store, dispatch }}>
-        {children}
-    </StoreContext.Provider>
+    const [store, dispatch] = useReducer(storeReducer, initialStore());
+
+    const actions = {
+       
+
+        addContact: async (contact) => {
+            try {
+                const response = await fetch("https://playground.4geeks.com/contact/agendas/AgendaLNKR/contacts", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(contact)
+                });
+                if (response.ok) {
+                    const savedContact = await response.json();
+                    dispatch({ type: "add_contact", payload: savedContact });
+                    return true; 
+                }
+            } catch (error) {
+                console.error("Error al crear el contacto:", error);
+            }
+            return false;
+        },
+
+        updateContact: async (id, contact) => {
+            try {
+                const response = await fetch(`https://playground.4geeks.com/contact/agendas/AgendaLNKR/contacts/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(contact)
+                });
+                if (response.ok) {
+                    const savedContact = await response.json();
+                    dispatch({ type: "update_contact", payload: savedContact });
+                    return true; 
+                }
+            } catch (error) {
+                console.error("Error al actualizar el contacto:", error);
+            }
+            return false;
+        }
+    };
+
+    return (
+        <StoreContext.Provider value={{ store, dispatch, actions }}>
+            {children}
+        </StoreContext.Provider>
+    );
 }
 
-// Custom hook to access the global state and dispatch function.
 export default function useGlobalReducer() {
-    const { dispatch, store } = useContext(StoreContext)
-    return { dispatch, store };
+    const context = useContext(StoreContext);
+    return context;
 }

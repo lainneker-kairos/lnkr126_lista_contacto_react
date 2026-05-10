@@ -1,20 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
-export const ContactCard = ({ contact, fetchContacts }) => {
+export const ContactCard = ({ contact }) => { 
     const [showModal, setShowModal] = useState(false);
+
+    const { dispatch } = useGlobalReducer();
 
     const handleDelete = async () => {
         try {
             const response = await fetch(`https://playground.4geeks.com/contact/agendas/AgendaLNKR/contacts/${contact.id}`, {
                 method: "DELETE"
             });
+
             if (response.ok) {
-                fetchContacts(); 
+                dispatch({ 
+                    type: "delete_contact", 
+                    payload: contact.id 
+                });
                 setShowModal(false); 
             }
         } catch (error) {
-            console.error("Error deleting contact:", error);
+            console.error("Error al eliminar el contacto:", error);
         }
     };
 

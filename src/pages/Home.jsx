@@ -32,7 +32,7 @@ export const Home = () => {
                     <div className="card border-0 shadow-sm h-100 py-3 hover-effect">
                         <div className="card-body">
                             <i className="fa-solid fa-bolt text-warning fa-3x mb-3"></i>
-                            <h4 className="card-title">Fast & Responsive</h4>
+                            <h4 className="card-title">Rápido & Responsivo</h4>
                             <p className="card-text text-muted">Disfruta de una experiencia fluida en todos tus dispositivos con actualizaciones instantáneas..</p>
                         </div>
                     </div>
